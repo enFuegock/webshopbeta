@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -55,11 +56,11 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    userRepository.delete(user);
-                    return ResponseEntity.noContent().build(); // Używamy ResponseEntity<Void>
-                })
-                .orElse(ResponseEntity.notFound().build());
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
