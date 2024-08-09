@@ -1,5 +1,8 @@
 package com.kodillagp.webshop.dto;
+
 import lombok.*;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -13,4 +16,6 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private Set<String> roles;
+    private String password;
 }

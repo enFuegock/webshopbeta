@@ -6,6 +6,7 @@ import com.kodillagp.webshop.mapper.UserMapper;
 import com.kodillagp.webshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,11 +36,16 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/api/users")
     public UserDTO createUser(@RequestBody UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
+        user.setPasswordHash(hashPassword(userDTO.getPassword())); // Zabezpieczenie hasła
         userRepository.save(user);
         return userMapper.toDTO(user);
+    }
+
+    private String hashPassword(String password) {
+        return new BCryptPasswordEncoder().encode(password);
     }
 
     @PutMapping("/{id}")
